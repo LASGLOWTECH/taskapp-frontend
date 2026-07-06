@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { AlertCircle, LogIn, Lock, User, Eye, EyeOff, Sparkles, Shield, Brain, Server, Cpu } from 'lucide-react';
+import { AlertCircle, LogIn, Lock, User, Eye, EyeOff, Shield, Brain, Server, Cpu } from 'lucide-react';
 
 export function Login() {
   const [username, setUsername] = useState('');

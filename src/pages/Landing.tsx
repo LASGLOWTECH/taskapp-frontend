@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CheckCircle, LayoutDashboard, Users, Zap, Shield, Globe, Rocket, Star, Award } from 'lucide-react';
+import { CheckCircle, LayoutDashboard, Users, Zap, Shield, Globe, Rocket, Award } from 'lucide-react';
 
 export function Landing() {
   return (
