@@ -70,7 +70,7 @@ jobs:
     needs: [validate, test] 
 
     steps:
-      - name: Checkout code
+          VITE_API_URL: MUST_USE_GITHUB_SECRET_HERE
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -84,7 +84,7 @@ jobs:
 
       - name: Build application
         env:
-          VITE_API_URL: https://api.euclaseresources.com/api   # Set your backend API URL
+          VITE_API_URL: VITE_API_URL_SECRET   # Set your backend API URL
           NODE_ENV: production
         run: npm run build
 
