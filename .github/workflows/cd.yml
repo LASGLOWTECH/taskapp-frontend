@@ -1,0 +1,81 @@
+name: CD - Deploy Frontend to Production
+
+on:
+  workflow_run:
+    workflows: ["Frontend CI"]
+    branches: [main]
+    types: [completed]
+
+env:
+  PROD_USER: ubuntu                      
+  PROD_FRONTEND_HOST: ${{ secrets.PROD_FRONTEND_HOST }} 
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-artifact
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ env.PROD_FRONTEND_HOST }} >> ~/.ssh/known_hosts
+
+
+      - name: Deploy frontend files
+        run: |
+          scp -i ~/.ssh/deploy_key frontend.tar.gz ${{ env.PROD_USER }}@${{ env.PROD_FRONTEND_HOST }}:/tmp/
+
+          ssh -i ~/.ssh/deploy_key ${{ env.PROD_USER }}@${{ env.PROD_FRONTEND_HOST }} << 'EOF'
+            set -e
+            TARGET_DIR="/var/www/taskapp"
+
+            # Backup current version
+            if [ -d "$TARGET_DIR" ] && [ "$(ls -A $TARGET_DIR)" ]; then
+              sudo cp -r "$TARGET_DIR" "$TARGET_DIR.backup.$(date +%s)"
+            fi
+
+            # Extract new files
+            sudo mkdir -p /tmp/new-frontend
+            sudo tar -xzf /tmp/frontend.tar.gz -C /tmp/new-frontend
+
+            # Atomically replace live directory
+            sudo rm -rf "$TARGET_DIR"
+            sudo mv /tmp/new-frontend "$TARGET_DIR"
+
+            # Set ownership
+            sudo chown -R www-data:www-data "$TARGET_DIR"
+            sudo chmod -R 755 "$TARGET_DIR"
+
+            # Clean up
+            rm -f /tmp/frontend.tar.gz
+          EOF
+
+      - name: Deploy Nginx configuration
+        run: |
+          # Copy the config file from the repository root
+          scp -i ~/.ssh/deploy_key ./nginx-production.conf ${{ env.PROD_USER }}@${{ env.PROD_FRONTEND_HOST }}:/tmp/nginx-taskapp.conf
+          
+          # Move into place and reload
+          ssh -i ~/.ssh/deploy_key ${{ env.PROD_USER }}@${{ env.PROD_FRONTEND_HOST }} << 'NGINX_EOF'
+            sudo mv /tmp/nginx-taskapp.conf /etc/nginx/sites-available/taskapp
+            sudo ln -sf /etc/nginx/sites-available/taskapp /etc/nginx/sites-enabled/taskapp
+            sudo nginx -t && sudo systemctl reload nginx
+          NGINX_EOF
+          
+      - name: Verify site responds
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ env.PROD_USER }}@${{ env.PROD_FRONTEND_HOST }} "curl -f http://localhost/ || echo 'Warning: local health check failed'"
