@@ -26,13 +26,10 @@ RUN npm run build
 
 FROM nginx:alpine
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-#Copy built assests from builder stage
+#Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
-
 
 #Expose port 80
 EXPOSE 80
 
-
+CMD ["nginx", "-g", "daemon off;"]
