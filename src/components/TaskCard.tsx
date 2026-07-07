@@ -4,7 +4,6 @@ import { Trash2, GripVertical } from 'lucide-react';
 interface TaskCardProps {
   task: Task;
   onDelete: (id: number) => void;
-  onEdit: (task: Task) => void;
 }
 
 const priorityColors: Record<Priority, string> = {
@@ -13,7 +12,7 @@ const priorityColors: Record<Priority, string> = {
   high: 'bg-red-100 text-red-800',
 };
 
-export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
+export function TaskCard({ task, onDelete }: TaskCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
       <div className="flex items-start gap-2">

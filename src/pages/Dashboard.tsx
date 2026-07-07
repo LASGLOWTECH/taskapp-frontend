@@ -144,7 +144,6 @@ export function Dashboard() {
             status="todo"
             tasks={todoTasks}
             onDelete={handleDeleteTask}
-            onEdit={(task) => console.log('Edit task:', task)}
             onAddTask={handleAddTask}
             onDrop={handleUpdateTaskStatus}
           />
@@ -153,7 +152,6 @@ export function Dashboard() {
             status="in_progress"
             tasks={inProgressTasks}
             onDelete={handleDeleteTask}
-            onEdit={(task) => console.log('Edit task:', task)}
             onAddTask={handleAddTask}
             onDrop={handleUpdateTaskStatus}
           />
@@ -162,7 +160,6 @@ export function Dashboard() {
             status="done"
             tasks={doneTasks}
             onDelete={handleDeleteTask}
-            onEdit={(task) => console.log('Edit task:', task)}
             onAddTask={handleAddTask}
             onDrop={handleUpdateTaskStatus}
           />

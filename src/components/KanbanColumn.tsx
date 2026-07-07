@@ -7,7 +7,6 @@ interface KanbanColumnProps {
   status: Status;
   tasks: Task[];
   onDelete: (id: number) => void;
-  onEdit: (task: Task) => void;
   onAddTask: (status: Status) => void;
   onDrop: (taskId: number, newStatus: Status) => void;
 }
@@ -23,7 +22,6 @@ export function KanbanColumn({
   status,
   tasks,
   onDelete,
-  onEdit,
   onAddTask,
   onDrop,
 }: KanbanColumnProps) {
@@ -73,7 +71,7 @@ export function KanbanColumn({
             onDragStart={(e) => handleDragStart(e, task.id)}
             className="cursor-move"
           >
-            <TaskCard task={task} onDelete={onDelete} onEdit={onEdit} />
+            <TaskCard task={task} onDelete={onDelete}  />
           </div>
         ))}
 
