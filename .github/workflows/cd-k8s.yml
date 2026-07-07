@@ -55,10 +55,10 @@ jobs:
         run: mkdir -p ~/.kube && echo ${{ secrets.KUBE_CONFIG }} | base64 -d > ~/.kube/config && chmod 600 ~/.kube/config
 
       - name: Update Kubernetes deployment
-        run: kubectl set image deployment/taskapp-frontend taskapp-frontend=ghcr.io/${{ secrets.GHCR_USERNAME }}/taskapp-frontend:latest -n taskapp
+        run: kubectl set image deployment/taskapp-frontend taskapp-frontend=ghcr.io/${{ secrets.GHCR_USERNAME }}/taskapp-frontend:latest -n taskapp --insecure-skip-tls-verify
 
       - name: Wait for rollout to complete
-        run: kubectl rollout status deployment/taskapp-frontend -n taskapp --timeout=5m
+        run: kubectl rollout status deployment/taskapp-frontend -n taskapp --timeout=5m --insecure-skip-tls-verify
 
       - name: Verify deployment
-        run: kubectl get pods -n taskapp -l app=taskapp-frontend
+        run: kubectl get pods -n taskapp -l app=taskapp-frontend --insecure-skip-tls-verify
