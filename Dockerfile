@@ -18,6 +18,10 @@ RUN npm ci --frozen-lockfile
 
 COPY . .
 
+#Accept build-time API URL
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 #Build App
 
 RUN npm run build
