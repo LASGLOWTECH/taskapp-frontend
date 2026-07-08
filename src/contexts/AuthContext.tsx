@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (username: string, password: string) => {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/login`,
+      `${import.meta.env.VITE_API_URL || 'http://api.euclaseresources.com/api/'}auth/login`,
       {
         method: 'POST',
         headers: {
