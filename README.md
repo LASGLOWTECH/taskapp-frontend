@@ -321,3 +321,6 @@ MIT License - feel free to use this project for learning and development purpose
 ## Contributing
 
 This is a learning project demonstrating full-stack development with Flask and React. Feel free to fork and modify for your own use.
+
+
+<!-- Security scan triggered at 2026-09-02 07:09:35 -->
